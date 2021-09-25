@@ -61,7 +61,7 @@ while True:
     new_t = int(time.time())
     if new_t % 1500 == 0:
         s.close()
-        ip_addr = (addr, 9993)
+        ip_addr = (addr, 8888)
         client = socket.socket()
         client.connect(ip_addr)
         faces, ids = getImagesAndLabels(path)
