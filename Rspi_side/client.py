@@ -39,8 +39,9 @@ def main():
                             client.send(line)
                             print("文件已发送: %s" % len(line))
                         print("文件发送完成...")
-                recognizer.read('trainer/trainer.yml')
-                os.system("./Decyption trainer/trainer.yml")
+                
+            #--------------------------------------------------------------------------------------
+            
             print('waiting for file...')
             ip_addr = ("10.16.23.122", 9990)    # 客户端绑定另一个电脑的ipv4地址，端口可换1024到50000以内的值
             client = socket.socket()
@@ -139,12 +140,16 @@ def main():
                                 recv_size += len(data)
                                 print("文件大小: %s 传输大小: %s" % (file_size, recv_size))
                             print("文件 %s 传输成功..." % file_size)
+                        
 
                         break
 
                 except:
-                    pass
+                    pass                
                     break
-                    
+            os.system("./Decyption trainer/trainer.yml")
+            recognizer.read('trainer/trainer.yml')
+                
+                
 if __name__ == '__main__':
     main()
