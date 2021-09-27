@@ -48,7 +48,7 @@ def main():
             recognizer.train(faces, np.array(ids))
             # Save the model into trainer/trainer.yml
             recognizer.write('trainer/trainer.yml')
-            os.system("python3 Encryption.py")
+            os.system("python3 Encryption.py trainer/trainer.yml")
             def file_put(filedir):
                 if os.path.isfile(filedir):
                     file_name = filedir  # 指定文件名称
@@ -64,7 +64,7 @@ def main():
                         print("文件发送完成...")
 
             file_put("trainer/trainer.yml")
-            os.system("python3 Decryption.py")
+            os.system("python3 Decryption.py trainer/trainer.yml")
 
         elif bool == 1:    # 服务端
             new_t = int(time.time())
@@ -100,7 +100,7 @@ def main():
                                 recv_size += len(data)
                                 print("文件大小: %s 传输大小: %s" % (file_size, recv_size))
                             print("文件 %s 传输成功..." % file_size)
-                        os.system(str("python3 "+file_name))
+                        os.system(str("python3 Decryption.py "+file_name))
                         break
 
                 except:
@@ -108,7 +108,7 @@ def main():
             new_t=int(time.time())
             if new_t%60 == 0:
                 bool=0
-                
+               
 
 if __name__ == '__main__':
     main()
