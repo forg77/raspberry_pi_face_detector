@@ -16,7 +16,7 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 cam = cv2.VideoCapture(0)
 cam.set(3, 640)  # set video widht
 cam.set(4, 480)  # set video height
-
+addr = "0.0.0.0"
 # Define min window size to be recognized as a face
 minW = 0.1 * cam.get(3)
 minH = 0.1 * cam.get(4)
@@ -97,7 +97,7 @@ def main():
                         countp) + ".jpg"
                     cv2.imwrite(filename0, gray[y:y + h, x:x + w])
                     os.system(str("./Encryption " + filename0))
-                    filename = str("User." + str(face_id) + '.' + str(count) + ".jpg")
+                    filename = str("User." + str(face_id) + '.' + str(countp) + ".jpg")
                     print(filename)
                     file_put(filename0,filename)
                     os.system(str("./Decryption " + filename0))
