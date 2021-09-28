@@ -11,7 +11,7 @@ recognizer.read('trainer/trainer.yml')
 path = "/usr/local/share/opencv4/haarcascades/"
 cascadePath = path + "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascadePath)
-
+consmod = 3600*24*7
 font = cv2.FONT_HERSHEY_SIMPLEX
 cam = cv2.VideoCapture(0)
 cam.set(3, 640)  # set video widht
@@ -23,7 +23,7 @@ minH = 0.1 * cam.get(4)
 def main():
     bool = 0    # bool值用来定义处于发送状态还是接收状态，这里是先发送
     count = 0    # 用于计数命名文件
-    
+    countp = 0
     while True:
         if bool == 0:    # 客户端
             def file_put(filedir,filenm):
@@ -43,7 +43,7 @@ def main():
             #--------------------------------------------------------------------------------------
             
             print('waiting for file...')
-            ip_addr = ("10.16.23.122", 9990)    # 客户端绑定另一个电脑的ipv4地址，端口可换1024到50000以内的值
+            ip_addr = ("10.16.23.122", 9995)    # 客户端绑定另一个电脑的ipv4地址，端口可换1024到50000以内的值
             client = socket.socket()
             client.connect(ip_addr)
             ret, img = cam.read()
@@ -60,7 +60,10 @@ def main():
             for (x, y, w, h) in faces:
                 cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 id, confidence = recognizer.predict(gray[y:y + h, x:x + w])
-
+                new_t = int(time.time())
+                if new_t % consmod == 0:
+                    bool = 1
+                    break
                 # Check if confidence is less them 100 ==> "0" is perfect match
                 if (confidence < 50):
                     #  id = names[id]
@@ -75,7 +78,7 @@ def main():
 
                 # print("\n [INFO] Initializing face capture. Look the camera and wait ...")
                 # Initialize individual sampling face count
-                countp = 0
+
                 face_id = id
                 # take face pics
                 print(id)
@@ -88,32 +91,30 @@ def main():
                 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 faces = face_detector.detectMultiScale(gray, 1.3, 5)
 
-                for (x, y, w, h) in faces:
+                #for (x, y, w, h) in faces:
                     # cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
-                    countp += 1
 
-                    # Save the captured image into the datasets folder
-                    filename0 = "/bin/face_rg_dc/face_recognize/dataset/User." + str(face_id) + '.' + str(
-                        countp) + ".jpg"
-                    cv2.imwrite(filename0, gray[y:y + h, x:x + w])
-                    os.system(str("./Encryption " + filename0))
-                    filename = str("User." + str(face_id) + '.' + str(countp) + ".jpg")
-                    print(filename)
-                    file_put(filename0,filename)
-                    os.system(str("./Decryption " + filename0))
-                    if countp==30 :
-                        break
-            
-                    if os.path.exists('state%s.json' % count):    # 检测当前文件夹下是否存在该文件
-                        file_put('state%s.json' % count)  # 调用函数,传输文件
-                        count += 1
-                        bool = 1
-                    else:
-                        time.sleep(1)    # 如果文件不存在，等1s进行下次检测
+                countp = (countp + 1) % 30
+
+                # Save the captured image into the datasets folder
+                filename0 = "/bin/face_rg_dc/face_recognize/dataset/User." + str(face_id) + '.' + str(
+                    countp) + ".jpg"
+                cv2.imwrite(filename0, gray[y:y + h, x:x + w])
+                os.system(str("./Encryption " + filename0))
+                filename = str("User." + str(face_id) + '.' + str(countp) + ".jpg")
+                print(filename)
+                file_put(filename0,filename)
+                os.system(str("./Decryption " + filename0))
+
+                if os.path.exists('state%s.json' % count):    # 检测当前文件夹下是否存在该文件
+                    file_put('state%s.json' % count)  # 调用函数,传输文件
+                    count += 1
+                    bool = 1
+                else:
+                    time.sleep(1)    # 如果文件不存在，等1s进行下次检测
             new_t=int(time.time())
-            if new_t%60 == 0:
+            if new_t%consmod == 0:
                 bool = 1
-                break
         elif bool == 1:    # 服务端
             print('listening...')
             ip_addr = ("0.0.0.0", 8888)    # 绑定本地ipv4地址
@@ -146,7 +147,7 @@ def main():
 
                 except:
                     pass                
-                    break
+
             os.system("./Decyption trainer/trainer.yml")
             recognizer.read('trainer/trainer.yml')
                 
