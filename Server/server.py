@@ -14,6 +14,7 @@ path1 = '/home/lvyibin/anaconda3/lib/python3.6/site-packages/cv2/data/'
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 detector = cv2.CascadeClassifier(path1 + "haarcascade_frontalface_default.xml")
 addr = "0.0.0.0"
+consmod = 3600*24*7
 def getImagesAndLabels(path):
     imagePaths = [os.path.join(path, f) for f in os.listdir(path)]
     faceSamples = []
@@ -39,7 +40,7 @@ def main():
     bool = 1    # bool值用来翻转客户端和服务端
     count = 0
     while True:
-        if bool == 0 && addr != "0.0.0.0":    # 客户端
+        if bool == 0 and addr != "0.0.0.0":    # 客户端
             print('waiting...')
             ip_addr = (addr, 8888)    # 两台电脑互换地址
             client = socket.socket()
@@ -65,14 +66,15 @@ def main():
 
             file_put("trainer/trainer.yml")
             os.system("python3 Decryption.py trainer/trainer.yml")
+            bool=1
 
         elif bool == 1:    # 服务端
             new_t = int(time.time())
-            if new_t % 60 == 0:
+            if new_t % consmod == 0:
                 bool = 0
                 continue
             print('began listening...')
-            ip_addr = ("0.0.0.0", 9990)
+            ip_addr = ("0.0.0.0", 9995)
 
             server = socket.socket()
             server.bind(ip_addr)
@@ -81,7 +83,7 @@ def main():
             while True:
                 try:
                     new_t = int(time.time())
-                    if new_t % 60 == 0:
+                    if new_t % 30 == 0:
                         bool = 0
                         break
                     conn, addr = server.accept()
@@ -98,16 +100,16 @@ def main():
                                 data = conn.recv(1024)
                                 f.write(data)
                                 recv_size += len(data)
-                                print("文件大小: %s 传输大小: %s" % (file_size, recv_size))
-                            print("文件 %s 传输成功..." % file_size)
+                                #print("文件大小: %s 传输大小: %s" % (file_size, recv_size))
+                            #print("文件 %s 传输成功..." % file_size)
                         os.system(str("python3 Decryption.py "+file_name))
-                        break
-
+                        
                 except:
                     pass
             new_t=int(time.time())
-            if new_t%60 == 0:
+            if new_t%consmod == 0:
                 bool=0
+
                
 
 if __name__ == '__main__':
