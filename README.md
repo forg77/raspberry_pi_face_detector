@@ -7,6 +7,8 @@
 x11和docker相冲突，仅输出识别出的人名/ID，可以根据需求修改  
 整合出的镜像 包含人脸识别、温湿度的内容  直接pull frog77/fg77:v3就可以  
 没有其他特别要求的话可以直接在服务器端和树莓派容器端分别运行server.py 和 client.py  
+
+----------------------------------------------------------------------------------------------
 1.需要在其他平台计算出train.yml  
   直接用facetrain.py就可以得出训练结果(train.yml)  这个训练结果大概是通用的  
 2.计算召回率
@@ -38,6 +40,7 @@ Here is a brief introduction of calculating recall sensitivity:
 run face_get.py to get the dataset then run evualte.py to calculate recall sensitivity  
 If you are willing to calculate train.yml at other pcs(or sth else) run facetrain.py and copy train.yml to where you want  
 
+-------------------------------------------------------------------------------------------------------
 Some frequently met errors:  
 cv2 location related errors: run sudo find / -iname "*opencv*" > /path_you_want/opencv_find.txt and check the txt  
 opencv errorno -215:
