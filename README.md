@@ -15,7 +15,7 @@ Many thanks to @armindocachada for his https://github.com/armindocachada/raspber
 DUE TO LIMITATIONS WHEN USING X11 IN DOCKER , ONLY NAME OR ID OF THE DETECTED PERSON CAN BE SHOWN.  
 THERE ARE ALSO SOME METHODS CAN SOLVE THIS ,I WOULD LOAD UP IF POSSIBLE.   
 
-if you want to use my image,just pull frog77/fg77:v3 which contains functions such as face recognization and temperature/humidity detection  
+if you want to use my image,just pull frog77/fg77:v3 which contains functions such as face recognition and temperature/humidity detection  
 
 
 
